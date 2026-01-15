@@ -1,13 +1,13 @@
 import { useRef, useState, useEffect, useMemo } from "react";
 import styles from "./AddressSearch.module.css";
 import { fetchSuggestions } from "../services/api";
-import { debounce } from "../utils";
+import { debounce, hash } from "../utils";
 
 export default function AddressSearch() {
   const [search, setSearch] = useState<string>();
   
-  const [activeSuggestion, setActiveSuggestion] = useState<{id: string, index: number}>();
-  const [suggestions, setSuggestions] = useState<{ id: string, value: string }[]>([]);
+  const [activeSuggestion, setActiveSuggestion] = useState<{id: number, index: number}>();
+  const [suggestions, setSuggestions] = useState<{ id: number, value: string }[]>([]);
   const suggestionRefs = useRef<Record<string, HTMLLIElement>>({});
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -62,7 +62,7 @@ export default function AddressSearch() {
                 const value = `${item.street} ${item.postNumber} ${item.city}`;
                 return {
                   value,
-                  id: btoa(value)
+                  id: hash(value)
                 }
               },
             ),

@@ -9,7 +9,7 @@ COPY common/package*.json ./common/
 COPY server/package*.json ./server/
 COPY client/package*.json ./client/
 
-RUN --mount=type=cache,target=/root/.npm npm ci
+RUN --mount=type=cache,id=npm-cache,target=/root/.npm npm ci
 
 COPY . .
 RUN npm run build --workspaces

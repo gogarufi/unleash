@@ -1,0 +1,38 @@
+{
+  "name": "server",
+  "private": true,
+  "version": "0.0.0",
+  "description": "",
+  "license": "UNLICENSED",
+  "author": "Egor Iakovlev",
+  "type": "module",
+  "scripts": {
+    "build": "npx tsc --build tsconfig.build.json",
+    "start": "npm run build && node --env-file=.env ./build/index.js",
+    "start:dev": "node --watch --env-file=.env src/index.ts",
+    "test": "vitest",
+    "lint:check": "npx eslint . --ext .js,.ts",
+    "lint:fix": "npm run lint:check -- --fix",
+    "prettier:check": "npx prettier --check .",
+    "prettier:write": "npx prettier --write ."
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^24.10.7",
+    "@types/supertest": "^6.0.3",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "jiti": "^2.6.1",
+    "supertest": "^7.2.2",
+    "typescript-eslint": "^8.53.0",
+    "vitest": "^4.0.17"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "pino-http": "^11.0.0",
+    "trie-search": "^2.2.1",
+    "zod": "^4.3.5"
+  }
+}

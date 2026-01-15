@@ -1,0 +1,12 @@
+node_modules
+
+build
+dist
+screenshots
+
+.env
+.env.*
+!.env.example
+
+.vscode
+.DS_Store

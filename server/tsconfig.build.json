@@ -1,0 +1,12 @@
+// This configuration file is used by tsc (NPM scripts) to build the project
+{
+  "$schema": "https://www.schemastore.org/tsconfig",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./build",
+    "tsBuildInfoFile": "./build/tsconfig.tsbuildinfo"
+  },
+  "include": ["./src/**/*"],
+  "references": [{ "path": "../common/tsconfig.build.json" }]
+}

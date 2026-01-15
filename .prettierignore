@@ -1,0 +1,7 @@
+client
+server
+common
+.gitignore
+.prettierignore
+.nvmrc
+.node-version

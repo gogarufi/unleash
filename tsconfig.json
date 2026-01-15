@@ -1,6 +1,0 @@
-// This configuration file is used by NPM scripts (tsc)
-{
-  "$schema": "https://www.schemastore.org/tsconfig",
-  "files": [],
-  "references": [{ "path": "./common" }, { "path": "./server" }, { "path": "./client" }]
-}

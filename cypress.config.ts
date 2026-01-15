@@ -5,6 +5,6 @@ export default defineConfig({
   fixturesFolder: false,
   e2e: {
     setupNodeEvents(_on, _config) {},
-    baseUrl: "http://localhost:3000",
+    baseUrl: "http://localhost:5173",
   },
 });

@@ -2,7 +2,7 @@
   --primary-color: #646cff;
   --primary-color-overlay: #646cff47;
   --primary-color-light-overlay: #646cff1f;
-  
+
   --accent-color: #e364ff;
   --secondary-accent-color: #ad64ff;
 
@@ -19,13 +19,6 @@
   color-scheme: light dark;
   color: var(--text-color);
   background-color: var(--bg-color);
-
-  background-image: 
-    radial-gradient(circle at 1px 1px, var(--dot-color) 1px, transparent 0),
-    radial-gradient(circle at 50% 50%, var(--dot-color) 1px, transparent 0);
-  background-size: 60px 60px;
-  background-position: center;
-  animation: pulse 8s ease-in-out;
 
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -44,9 +37,16 @@
 }
 
 @keyframes pulse {
-  0% { background-size: 60px 60px; }
-  50% { background-size: 63px 63px; --dot-color: var(--dot-bright-color); }
-  100% { background-size: 60px 60px; }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+    --dot-color: var(--dot-bright-color);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 body {
@@ -55,6 +55,24 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: -5%;
+  left: -5%;
+  width: 110%;
+  height: 110%;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 1px 1px, var(--dot-color) 1px, transparent 0),
+    radial-gradient(circle at 50% 50%, var(--dot-color) 1px, transparent 0);
+  background-size: 60px 60px;
+  background-position: center;
+  animation: pulse 8s ease-in-out;
+  will-change: transform;
 }
 
 h1 {

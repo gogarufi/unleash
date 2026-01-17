@@ -18,6 +18,10 @@
   text-align: left;
   font-family: monospace;
   
+  li {
+    margin-bottom: 8px;
+  }
+
   span {
     background-color: var(--bg-color);
     margin-bottom: 0.4em;

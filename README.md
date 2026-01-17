@@ -1,6 +1,8 @@
 Address Search service:
 
-Deployed to Railway from GitHubwith Docker [play here](https://unleash-address-search.vercel.app/). Supports:
+Deployed to Railway from GitHub with Docker. [Live Demo](https://unleash-production-47eb.up.railway.app). 
+
+Supports:
 - logs search, filtering
 - monitoring dashboard (CPU, memory, disk usage, network traffic)
 - webhooks on events

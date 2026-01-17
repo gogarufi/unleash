@@ -13,8 +13,10 @@
   font-weight: 500;
   font-family: inherit;
   background-color: var(--secondary-bg-color);
+  box-shadow: 0 0 0 transparent;
   transition: border-color 0.25s;
   anchor-name: --search-anchor;
+  animation: color-switch 6s ease-in-out;
 
   &:is(:hover, :focus, :focus-visible) {
     border-color: var(--primary-color);
@@ -23,6 +25,25 @@
   &:is(:focus, :focus-visible) {
     outline: 2px solid var(--primary-color);
     outline-offset: 2px;
+  }
+}
+
+@keyframes color-switch {
+  0% { 
+      border-color: --secondary-bg-color; 
+      box-shadow: 0 0 px var(--primary-color);
+  }
+  25% { 
+      border-color: var(--accent-color);
+      box-shadow: 0 0 8px var(--accent-color);
+  }
+  50% { 
+      border-color: var(--primary-color);
+      box-shadow: 0 0 8px var(--primary-color);
+  }
+  100% { 
+      border-color: --secondary-bg-color;
+      box-shadow: 0 0 px transparent;
   }
 }
 

@@ -17,7 +17,7 @@
   transition: border-color 0.25s;
   anchor-name: --search-anchor;
   
-  &:is(:hover) {
+  &:is(:hover, :active) {
     animation: color-switch 4s ease-in-out;
   }
 

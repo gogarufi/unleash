@@ -1,27 +1,36 @@
 import { useRef, useState, useEffect, useMemo } from "react";
 import styles from "./AddressSearch.module.css";
 import { fetchSuggestions } from "../services/api";
-import { debounce, hash } from "../utils";
+import { debounce } from "../utils";
+
+export interface Suggestion {
+  id: string,
+  value: string
+};
+
+export interface Suggestions {
+  data: Suggestion[];
+  query: string;
+};
 
 export default function AddressSearch() {
-  const [search, setSearch] = useState<string>();
-  
-  const [activeSuggestion, setActiveSuggestion] = useState<{id: number, index: number}>();
-  const [suggestions, setSuggestions] = useState<{ id: number, value: string }[]>([]);
+  const [search, setSearch] = useState<string>("");
+  const [activeSuggestion, setActiveSuggestion] = useState<Suggestion & { index: number }>();
+  const [suggestions, setSuggestions] = useState<Suggestions>({ query: "", data: [] });
   const suggestionRefs = useRef<Record<string, HTMLLIElement>>({});
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (suggestions.length === 0) return;
+    if (suggestions.data.length === 0) return;
 
     switch (e.key) {
       case "ArrowDown":
         e.preventDefault();
         setActiveSuggestion((prev) => {
           if (!prev) {
-            return { id: suggestions[0].id, index: 0 };
+            return { ...suggestions.data[0], index: 0 };
           } else {
-            const index = prev.index < suggestions.length - 1 ? prev.index + 1 : prev.index;
-            return { id: suggestions[index].id, index };
+            const index = prev.index < suggestions.data.length - 1 ? prev.index + 1 : prev.index;
+            return { ...suggestions.data[index], index };
           }
         });
         break;
@@ -29,70 +38,75 @@ export default function AddressSearch() {
       case "ArrowUp":
         e.preventDefault();
         setActiveSuggestion((prev) => {
-          if (prev) {
-            return prev.index > 0 ? { id: suggestions[prev.index - 1].id, index: prev.index - 1 } : undefined;
+          if (prev && prev.index > 0) {
+            const index = prev.index - 1
+            return { ...suggestions.data[index], index };
           }
-          return undefined;
+          return;
         });
         break;
 
       case "Enter":
         if (activeSuggestion) {
           e.preventDefault();
-          setSearch(suggestions[activeSuggestion.index].value);
-          updateSuggestions();
+          selectSuggestion(suggestions.data[activeSuggestion.index].value);
         }
         break;
     }
   };
+  
+  const handleInputEvent = (e: React.ChangeEvent<HTMLInputElement> | React.FocusEvent<HTMLInputElement>) => {
+    const search = e.target.value
 
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-    updateSuggestions(e.target.value);
+    setSearch(search);
+    
+    if (search.trim().length < 3) {
+      resetSuggestions();
+    }
+    
+    const query = search.trim();
+    
+    if (query.length < 3 || query === suggestions.query) return;
+    
+    fetchSuggestionsDebounced(query);
   };
 
-  const fetchSuggestionsDebounced = useMemo(
-    () =>
-      debounce(async (query: string) => {
-        const result = await fetchSuggestions(query);
-        if (result.success) {
-          setSuggestions(
-            result.data.map(
-              (item) => {
-                const value = `${item.street} ${item.postNumber} ${item.city}`;
-                return {
-                  value,
-                  id: hash(value)
-                }
-              },
-            ),
-          );
-        } else {
-          // In this case showing error message in the UI seems unnecessary
-          console.error(
-            "Error fetching suggestions: ",
-            result.status,
-            result.error,
-          );
-        }
-        setActiveSuggestion(undefined);
-      }, 300),
+  const handleSuggestionRef = (id: string) => (e: HTMLLIElement | null) => {
+    if (e) {
+      suggestionRefs.current[id] = e;
+    } else {
+      delete suggestionRefs.current[id];
+    }
+  };
+
+  // React's compiler struggles reconciling this - the warning can be ignored
+  // NOTE: It is better to use 'useDebounced' from the external hooks library
+  const fetchSuggestionsDebounced = useMemo(() =>
+    debounce(async (query: string) => {
+      const result = await fetchSuggestions(query);
+      if (result.success) {
+        const data = result.data.map((s) => ({
+          value: `${s.street} ${s.postNumber} ${s.city}`,
+          id: s.$tsid
+        }));
+        setSuggestions({ data, query });
+      } else {
+        // In this case showing error message in the UI seems unnecessary
+        console.error("Error fetching suggestions: ", result.status, result.error);
+      };
+      setActiveSuggestion(undefined);
+    }, 250),
     [],
   );
-
-  const updateSuggestions = (query?: string) => {
-    if (!query?.trim() || query.trim().length < 3) {
-      setSuggestions([]);
-      setActiveSuggestion(undefined);
-      return;
-    }
-
-    fetchSuggestionsDebounced(query);
+  
+  const resetSuggestions = () => {
+    setSuggestions({ data: [], query: "" });
+    setActiveSuggestion(undefined);
   };
 
   const selectSuggestion = (value: string) => {
     setSearch(value);
-    updateSuggestions();
+    resetSuggestions();
   };
 
   useEffect(() => {
@@ -107,29 +121,28 @@ export default function AddressSearch() {
     }
   }, [activeSuggestion, suggestionRefs]);
 
-  useEffect(() => {
-    return () => {
-      fetchSuggestionsDebounced.cancel();
-    };
-  }, [fetchSuggestionsDebounced]);
+  useEffect(() =>
+    () => fetchSuggestionsDebounced.cancel(),
+    [fetchSuggestionsDebounced]
+  );
 
   return (
     <div
       className={styles.searchContainer}
       onBlur={(e) =>
         e.relatedTarget?.parentElement?.id !== "suggestions" &&
-        updateSuggestions()
+        resetSuggestions()
       }
       // A11y
       role="combobox"
-      aria-activedescendant={activeSuggestion && `suggestion-${activeSuggestion.index}`}
+      aria-activedescendant={activeSuggestion && `suggestion-${activeSuggestion.id}`}
     >
       <input
         className={styles.searchInput}
-        onChange={handleInput}
-        onFocus={handleInput}
+        onChange={handleInputEvent}
+        onFocus={handleInputEvent}
         onKeyDown={handleInputKeyDown}
-        value={activeSuggestion ? suggestions[activeSuggestion.index].value : search}
+        value={activeSuggestion ? activeSuggestion.value : search}
         type="search"
         name="address-search"
         autoComplete="off"
@@ -142,7 +155,7 @@ export default function AddressSearch() {
         data-cy-test-id="address-search-query-input"
       />
 
-      {suggestions.length > 0 && (
+      {suggestions.data.length > 0 && (
         <ul
           className={styles.searchSuggestions}
           // A11y
@@ -151,22 +164,16 @@ export default function AddressSearch() {
           // Cypress
           data-cy-test-id="suggestions-ul-list"
         >
-          {suggestions.map((s, i) => (
+          {suggestions.data.map((s) => (
             <li
               key={s.id}
-              ref={(el) => {
-                if (el) {
-                  suggestionRefs.current[s.id] = el;
-                } else {
-                  delete suggestionRefs.current[s.id];
-                }
-              }}
+              ref={handleSuggestionRef(s.id)}
               onClick={() => selectSuggestion(s.value)}
               tabIndex={-1}
               // A11y
-              id={`suggestion-${i}`}
+              id={`suggestion-${s.id}`}
               role="option"
-              aria-selected={i === activeSuggestion?.index}
+              aria-selected={s.id === activeSuggestion?.id}
             >
               {s.value}
             </li>

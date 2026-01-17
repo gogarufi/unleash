@@ -16,7 +16,10 @@ export async function fetchSuggestions(
       const result = AddressesSchema.safeParse(json);
 
       if (!result.success) {
-        throw Error(z.prettifyError(result.error));
+        return {
+          success: false,
+          error: z.prettifyError(result.error)
+        };
       }
 
       return {

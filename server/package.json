@@ -9,7 +9,7 @@
   "scripts": {
     "build": "npx tsc --build tsconfig.build.json",
     "start": "npm run build && node --env-file=.env ./build/index.js",
-    "start:dev": "node --watch --env-file=.env src/index.ts",
+    "start:dev": "concurrently \"npm run watch -w common\" \"node --watch --env-file=.env src/index.ts\"",
     "test": "vitest",
     "lint:check": "npx eslint . --ext .js,.ts",
     "lint:fix": "npm run lint:check -- --fix",
@@ -21,6 +21,7 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^24.10.7",
     "@types/supertest": "^6.0.3",
+    "concurrently": "^9.2.1",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "jiti": "^2.6.1",

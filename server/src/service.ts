@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { type Address, AddressesSchema } from "common";
+import { type AddressJson, AddressesJsonSchema } from "common";
 import ts from "trie-search";
 import { z } from "zod";
 import { env } from "./config.ts";
@@ -44,7 +44,7 @@ const INTERNATIONALIZE_EXPAND_REGEXES = [
   },
 ];
 
-export const addresses = new ts.default<Address>(
+export const addresses = new ts.default<AddressJson>(
   ["city", "street", "postNumber"],
   { expandRegexes: INTERNATIONALIZE_EXPAND_REGEXES },
 );
@@ -58,7 +58,7 @@ export async function loadAddresses() {
       "utf8",
     );
     const json = JSON.parse(data) as unknown;
-    const result = AddressesSchema.safeParse(json);
+    const result = AddressesJsonSchema.safeParse(json);
 
     if (!result.success) {
       console.error("Error parsing addresses: ", z.prettifyError(result.error));
@@ -77,7 +77,5 @@ export async function loadAddresses() {
 // This adds a performance cost which is negligible for an in-memory solution with limited data
 // NOTE: I would return only the fields used by the client (keeping as is due to the TA requirement)
 export function searchAddresses(query: string, limit = 20) {
-  return addresses
-    .search(query)
-    .slice(0, limit);
+  return addresses.search(query).slice(0, limit);
 }

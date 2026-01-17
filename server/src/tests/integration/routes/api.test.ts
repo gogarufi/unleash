@@ -45,10 +45,12 @@ describe("Server API", () => {
       expect(result.data?.[0]?.city).toMatch(/^tro/i);
       expect(result.data?.[0]?.street).toMatch(/^røst/i);
       expect(result.data?.[0]?.postNumber.toString()).toMatch(/^90/);
+      expect(result.data?.[0]?.$tsid).toBeDefined();
 
       expect(result.data?.[1]?.city).toMatch(/^tro/i);
       expect(result.data?.[1]?.street).toMatch(/^røst/i);
       expect(result.data?.[1]?.postNumber.toString()).toMatch(/^90/);
+      expect(result.data?.[0]?.$tsid).toBeDefined();
 
       expect(result.data?.[0]).not.toEqual(result.data?.[1]);
     });

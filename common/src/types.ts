@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const AddressSchema = z.object({
+export const AddressJsonSchema = z.object({
   city: z.string(),
   county: z.string(),
   district: z.string(),
@@ -9,9 +9,16 @@ export const AddressSchema = z.object({
   type: z.string(),
   municipalityNumber: z.number(),
   postNumber: z.number(),
-  typeCode: z.number(),
-  $tsid: z.string().optional(),
+  typeCode: z.number()
 });
+
+export type AddressJson = z.infer<typeof AddressJsonSchema>;
+
+export const AddressesJsonSchema = z.array(AddressJsonSchema);
+
+export const AddressSchema = AddressJsonSchema.extend({
+    $tsid: z.string().nonempty()
+})
 
 export type Address = z.infer<typeof AddressSchema>;
 

@@ -50,7 +50,7 @@ describe("Address search", () => {
 
     cy.getBy("address-search-query-input")
       .as("input")
-      .type(searchInput, { delay: 290 });
+      .type(searchInput, { delay: 240 });
 
     cy.wait("@addressesRequest").then((r) => {
       const q = r.request?.query?.q;
@@ -63,7 +63,7 @@ describe("Address search", () => {
       req.alias = "addressesRequest";
     });
 
-    cy.get("@input").type(searchInput, { delay: 310 });
+    cy.get("@input").type(searchInput, { delay: 260 });
 
     cy.wait("@addressesRequest").then((r) => {
       const label = r.request?.query?.q;

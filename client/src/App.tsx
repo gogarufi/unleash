@@ -8,13 +8,16 @@ function App() {
       <div className="card">
         <AddressSearch />
         <ul className="tip">
-          <li>Type 3 characters to get suggestions.</li>
           <li>
-            Use <b>Up/Down</b> keys to navigate and <b>Enter</b> to select a
-            suggestion.
+            <span>Type 3 characters to get suggestions.</span>
           </li>
           <li>
-            Use <b>Esc</b> key to clear the input.
+            <span>
+              Use <b>Up/Down</b> keys to navigate and <b>Enter</b> to select a suggestion.
+            </span>
+          </li>
+          <li>
+            <span>Use <b>Esc</b> key to clear the input.</span>
           </li>
         </ul>
       </div>

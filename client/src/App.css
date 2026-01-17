@@ -17,4 +17,10 @@
   color: var(--secondary-text-color);
   text-align: left;
   font-family: monospace;
+  
+  span {
+    background-color: var(--bg-color);
+    margin-bottom: 0.4em;
+  }
 }
+

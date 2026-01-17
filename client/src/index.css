@@ -3,19 +3,29 @@
   --primary-color-overlay: #646cff47;
   --primary-color-light-overlay: #646cff1f;
   
-  --accent-color: #9d00ff;
+  --accent-color: #e364ff;
+  --secondary-accent-color: #ad64ff;
 
-  --bg-color: #242424;
+  --bg-color: #151515;
   --secondary-bg-color: #1a1a1a;
+
   --border-color: white;
+  --dot-bright-color: #ffffff;
   --box-shadow-color: black;
 
   --text-color: #ffffffde;
-  --secondary-text-color: #888;
+  --secondary-text-color: #c4c4c4;
 
   color-scheme: light dark;
   color: var(--text-color);
   background-color: var(--bg-color);
+
+  background-image: 
+    radial-gradient(circle at 1px 1px, var(--dot-color) 1px, transparent 0),
+    radial-gradient(circle at 50% 50%, var(--dot-color) 1px, transparent 0);
+  background-size: 60px 60px;
+  background-position: center;
+  animation: pulse 8s ease-in-out;
 
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -25,6 +35,18 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@property --dot-color {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #ffffff5e;
+}
+
+@keyframes pulse {
+  0% { background-size: 60px 60px; }
+  50% { background-size: 63px 63px; --dot-color: var(--dot-bright-color); }
+  100% { background-size: 60px 60px; }
 }
 
 body {
@@ -43,9 +65,20 @@ h1 {
 @media (prefers-color-scheme: light) {
   :root {
     --text-color: #454545;
+
     --bg-color: #ffffff;
     --secondary-bg-color: #f9f9f9;
+
     --border-color: black;
+    --dot-bright-color: #000000;
     --box-shadow-color: lightgray;
+
+    --secondary-text-color: #6e6e6e;
+  }
+
+  @property --dot-color {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #0000004f;
   }
 }

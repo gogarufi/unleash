@@ -41,7 +41,7 @@
     transform: scale(1);
   }
   50% {
-    transform: scale(1.05);
+    transform: scale(1.1);
     --dot-color: var(--dot-bright-color);
   }
   100% {
@@ -71,7 +71,7 @@ body::before {
     radial-gradient(circle at 50% 50%, var(--dot-color) 1px, transparent 0);
   background-size: 60px 60px;
   background-position: center;
-  animation: pulse 8s ease-in-out;
+  animation: pulse 2s ease-in-out;
   will-change: transform;
 }
 
